@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import EmployeeList from './components/EmployeeList';
+import EmployeeForm from './components/EmployeeForm';
+import Visualizations from './components/Visualizations';
+import SelectionProcess from './components/SelectionProcess';
+import Notification from './components/Notification';
+import Report from './components/Report';
 
-function App() {
+const App = () => {
+  const [notification, setNotification] = React.useState({
+    open: false,
+    message: ''
+  });
+
+  const handleNotification = (message) => {
+    setNotification({ open: true, message });
+  };
+
+  const closeNotification = () => {
+    setNotification({ open: false, message: '' });
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div>
+        <Switch>
+          <Route path="/" exact component={EmployeeList} />
+          <Route path="/add-employee" render={() => <EmployeeForm onSave={() => handleNotification('Employee added successfully!')} />} />
+          <Route path="/edit-employee/:id" render={(props) => <EmployeeForm {...props} onSave={() => handleNotification('Employee updated successfully!')} />} />
+          <Route path="/visualizations" component={Visualizations} />
+          <Route path="/selection-process" component={SelectionProcess} />
+          <Route path="/report" component={Report} />
+        </Switch>
+        <Notification open={notification.open} message={notification.message} onClose={closeNotification} />
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
